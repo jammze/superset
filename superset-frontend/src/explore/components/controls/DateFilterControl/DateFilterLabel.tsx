@@ -50,6 +50,19 @@ import {
   AdvancedFrame,
 } from './components';
 
+// 修改的功能：filter类型为 No filter时，弹窗默认显示Custom的表单
+// 定义frame 类型变量，在二次开发的代码里会使用
+const NO_TILTER = 'No filter';
+const CUSTOM = 'Custom';
+
+/* 
+date filter的RANGE TYPE分为5类,每一类对应一个form表单结构，下面的frame和guessdFrame变量表示RANGE TYPE的值，
+但是实际存储的值并不是只有5种，因为Common、Calendar、Advanced都可以再细分为具体的类型，他们的form结构都是相同的,
+所以，因此guessFrame的作用是根据value的值求出RANGE TYPE，然后显示对应的form。
+frame 和guessdFrame区别：guessdFrame表示外部传入的value对应的RANGE TYPE, frame是组件内部存储RANGE TYPE的状态变量，在点击apply按钮的时候
+才会更新外部的value
+*/
+
 const guessFrame = (timeRange: string): FrameType => {
   if (COMMON_RANGE_VALUES_SET.has(timeRange)) {
     return 'Common';
@@ -58,7 +71,8 @@ const guessFrame = (timeRange: string): FrameType => {
     return 'Calendar';
   }
   if (timeRange === 'No filter') {
-    return 'No filter';
+    // return "No filter";
+    return CUSTOM;
   }
   if (customTimeRangeDecode(timeRange).matchedFlag) {
     return 'Custom';
@@ -215,7 +229,10 @@ export default function DateFilterLabel(props: DateFilterControlProps) {
         if (
           guessedFrame === 'Common' ||
           guessedFrame === 'Calendar' ||
-          guessedFrame === 'No filter'
+          guessedFrame === 'No filter' ||
+          // --新增的代码 start--
+          (guessedFrame === CUSTOM && value === NO_TILTER)
+          // --新增的代码 end--
         ) {
           setActualTimeRange(value);
           setTooltipTitle(
@@ -314,7 +331,12 @@ export default function DateFilterLabel(props: DateFilterControlProps) {
       <Divider />
       <div>
         <div className="section-title">{t('Actual time range')}</div>
-        {validTimeRange && <div>{evalResponse}</div>}
+        {/* --修改过的内容 start--*/}
+        {/* {validTimeRange && <div>{evalResponse}</div>} */}
+        {validTimeRange && (
+          <div>{frame === NO_TILTER ? NO_TILTER : evalResponse}</div>
+        )}
+        {/* --修改过的内容 end--*/}
         {!validTimeRange && (
           <IconWrapper className="warning">
             <Icons.ErrorSolidSmall iconColor={theme.colors.error.base} />
