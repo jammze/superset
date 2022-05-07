@@ -22,6 +22,7 @@ import React from 'react';
 import { SuperChart, logging, Behavior, t } from '@superset-ui/core';
 import { Logger, LOG_ACTIONS_RENDER_CHART } from 'src/logger/LogUtils';
 import { EmptyStateBig, EmptyStateSmall } from 'src/components/EmptyState';
+import ChartRenderSingleton from 'src/utils/chartRenderSingleton';
 
 const propTypes = {
   annotationData: PropTypes.object,
@@ -66,7 +67,7 @@ const defaultProps = {
   onFilterMenuOpen: () => BLANK,
   onFilterMenuClose: () => BLANK,
   initialValues: BLANK,
-  setControlValue() {},
+  setControlValue() { },
   triggerRender: false,
 };
 
@@ -140,6 +141,7 @@ class ChartRenderer extends React.Component {
         duration: Logger.getTimestamp() - this.renderStartTime,
       });
     }
+    ChartRenderSingleton.completeRender(chartId);
   }
 
   handleRenderFailure(error, info) {
@@ -162,6 +164,7 @@ class ChartRenderer extends React.Component {
         duration: Logger.getTimestamp() - this.renderStartTime,
       });
     }
+    ChartRenderSingleton.completeRender(chartId);
   }
 
   handleSetControlValue(...args) {
@@ -213,13 +216,13 @@ class ChartRenderer extends React.Component {
     const webpackHash =
       process.env.WEBPACK_MODE === 'development'
         ? `-${
-            // eslint-disable-next-line camelcase
-            typeof __webpack_require__ !== 'undefined' &&
-            // eslint-disable-next-line camelcase, no-undef
-            typeof __webpack_require__.h === 'function' &&
-            // eslint-disable-next-line no-undef
-            __webpack_require__.h()
-          }`
+        // eslint-disable-next-line camelcase
+        typeof __webpack_require__ !== 'undefined' &&
+        // eslint-disable-next-line camelcase, no-undef
+        typeof __webpack_require__.h === 'function' &&
+        // eslint-disable-next-line no-undef
+        __webpack_require__.h()
+        }`
         : '';
 
     let noResultsComponent;
@@ -227,8 +230,8 @@ class ChartRenderer extends React.Component {
     const noResultDescription =
       this.props.source === 'explore'
         ? t(
-            'Make sure that the controls are configured properly and the datasource contains data for the selected time range',
-          )
+          'Make sure that the controls are configured properly and the datasource contains data for the selected time range',
+        )
         : undefined;
     const noResultImage = 'chart.svg';
     if (width > BIG_NO_RESULT_MIN_WIDTH && height > BIG_NO_RESULT_MIN_HEIGHT) {

@@ -23,7 +23,8 @@ import { useTheme } from '@superset-ui/core';
 import { useSelector, connect } from 'react-redux';
 
 import { getChartIdsInFilterBoxScope } from 'src/dashboard/util/activeDashboardFilters';
-import Chart from '../../containers/Chart';
+import Chart from './ChartWrapper';
+// import Chart from '../../containers/Chart';
 import AnchorLink from '../../../components/AnchorLink';
 import DeleteComponentButton from '../DeleteComponentButton';
 import DragDroppable from '../dnd/DragDroppable';
@@ -356,23 +357,23 @@ class ChartHolder extends React.Component {
               )}
               {!!this.state.outlinedComponentId &&
                 ChartHolder.renderInFocusCSS(this.state.outlinedColumnName)}
-              <Chart
-                componentId={component.id}
-                id={component.meta.chartId}
-                dashboardId={dashboardId}
-                width={chartWidth}
-                height={chartHeight}
-                sliceName={
-                  component.meta.sliceNameOverride ||
-                  component.meta.sliceName ||
-                  ''
-                }
-                updateSliceName={this.handleUpdateSliceName}
-                isComponentVisible={isComponentVisible}
-                handleToggleFullSize={this.handleToggleFullSize}
-                isFullSize={isFullSize}
-                postTransformProps={this.handlePostTransformProps}
-              />
+                <Chart
+                  componentId={component.id}
+                  id={component.meta.chartId}
+                  dashboardId={dashboardId}
+                  width={chartWidth}
+                  height={chartHeight}
+                  sliceName={
+                    component.meta.sliceNameOverride ||
+                    component.meta.sliceName ||
+                    ''
+                  }
+                  updateSliceName={this.handleUpdateSliceName}
+                  isComponentVisible={isComponentVisible}
+                  handleToggleFullSize={this.handleToggleFullSize}
+                  isFullSize={isFullSize}
+                  postTransformProps={this.handlePostTransformProps}
+                />
               {editMode && (
                 <HoverMenu position="top">
                   <div data-test="dashboard-delete-component-button">

@@ -43,6 +43,7 @@ import {
 import { getChartIdsInFilterScope } from 'src/dashboard/util/getChartIdsInFilterScope';
 import findTabIndexByComponentId from 'src/dashboard/util/findTabIndexByComponentId';
 import { setInScopeStatusOfFilters } from 'src/dashboard/actions/nativeFilters';
+import ChartRenderSingleton from 'src/utils/chartRenderSingleton';
 import { getRootLevelTabIndex, getRootLevelTabsComponent } from './utils';
 import { findTabsWithChartsInScope } from '../nativeFilters/utils';
 import { NATIVE_FILTER_DIVIDER_PREFIX } from '../nativeFilters/FiltersConfigModal/utils';
@@ -121,6 +122,10 @@ const DashboardContainer: FC<DashboardContainerProps> = ({ topLevelTabs }) => {
     });
     dispatch(setInScopeStatusOfFilters(scopes));
   }, [nativeFilterScopes, dashboardLayout, dispatch]);
+
+  useEffect(() => {
+    ChartRenderSingleton.init();
+  }, []);
 
   const childIds: string[] = topLevelTabs
     ? topLevelTabs.children
