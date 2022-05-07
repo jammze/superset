@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
+import { Waypoint } from 'react-waypoint';
 import ChartRenderSingleton from 'src/utils/chartRenderSingleton';
 import Chart from '../../containers/Chart';
 
@@ -17,27 +18,12 @@ const ChartWrapper: React.FC<{
   const { id, chartWidth, chartHeight, componentId } = props;
   const [show, setShow] = useState(false);
   const container = useRef<HTMLDivElement>(null);
-  const io = useRef<IntersectionObserver | null>(
-    new IntersectionObserver(entries => {
-      const ele = entries[0];
-      if (ele.isIntersecting) {
-        ChartRenderSingleton.addVisible(id);
-      } else {
-        ChartRenderSingleton.removeVisible(id);
-      }
-    }),
-  );
-  useEffect(() => {
-    if (show && io.current) {
-      if (container.current) {
-        io.current.unobserve(container.current);
-      }
-      io.current.disconnect();
-      io.current = null;
-    } else if (container.current) {
-      io.current?.observe(container.current);
-    }
-  }, [show]);
+  const onEnter = () => {
+    ChartRenderSingleton.addVisible(id);
+  };
+  const onLeave = () => {
+    ChartRenderSingleton.removeVisible(id);
+  };
   useEffect(() => {
     ChartRenderSingleton.registe(id, () => {
       setShow(true);
@@ -52,7 +38,9 @@ const ChartWrapper: React.FC<{
         key={`chart-${componentId}`}
         height={chartHeight}
         width={chartWidth}
-      />
+      >
+        <Waypoint onEnter={onEnter} onLeave={onLeave} />
+      </StyledContainer>
     );
   }
   return content;

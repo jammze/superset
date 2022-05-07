@@ -31,13 +31,13 @@ export class ChartRenderSingleton {
   // 注册组件渲染的回调
 
   registe(chartId: number, callback: Function) {
-    if (this.register[chartId]) {
-      return;
+    if (!this.charts.includes(chartId)) {
+      this.charts.push(chartId);
     }
-    this.charts.push(chartId);
+    const sort = this.charts.indexOf(chartId);
     this.register[chartId] = {
       callback,
-      sort: this.charts.length - 1,
+      sort,
     };
   }
 
