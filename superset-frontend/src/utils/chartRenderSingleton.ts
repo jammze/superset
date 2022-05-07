@@ -1,11 +1,15 @@
 const MAX_POOL = 1; // 控制同时渲染的组件数量
 
+interface IRegister {
+  callback: Function | null;
+  sort: number; // 记录每个节点的顺序
+}
 export class ChartRenderSingleton {
   private charts: number[]; // 存放首屏渲染的chart id
 
   private visibleCharts: Set<number>; // 记录在可视窗口内chart id
 
-  private register: Record<number, Function | null>; // 存放渲染组件的回调
+  private register: Record<number, IRegister>; // 存放渲染组件的回调
 
   private renderPool: number; // 渲染状态
 
@@ -30,8 +34,11 @@ export class ChartRenderSingleton {
     if (this.register[chartId]) {
       return;
     }
-    this.register[chartId] = callback;
     this.charts.push(chartId);
+    this.register[chartId] = {
+      callback,
+      sort: this.charts.length - 1,
+    };
   }
 
   // 当前渲染的组件完成渲染时开始渲染下一个组件
@@ -66,19 +73,20 @@ export class ChartRenderSingleton {
     }
     this.renderPool -= 1;
     requestAnimationFrame(() => {
-      let callIndex = 0;
+      let callIndex = this.charts.length;
       // 按注册顺序寻找第一个可视节点渲染
-      while (
-        (!this.visibleCharts.has(this.charts[callIndex]) ||
-          !this.register[this.charts[callIndex]]) &&
-        callIndex < this.charts.length
-      ) {
-        callIndex += 1;
-      }
-      const callback = this.register[this.charts[callIndex]];
+      this.visibleCharts.forEach(ele => {
+        if (
+          this.register[ele].callback &&
+          this.register[ele].sort < callIndex
+        ) {
+          callIndex = this.register[ele].sort;
+        }
+      });
+      const { callback } = this.register[this.charts[callIndex]];
       if (callback) {
         // 执行完设为null，防止重复执行
-        this.register[this.charts[callIndex]] = null;
+        this.register[this.charts[callIndex]].callback = null;
         callback();
       } else {
         this.renderPool += 1;
