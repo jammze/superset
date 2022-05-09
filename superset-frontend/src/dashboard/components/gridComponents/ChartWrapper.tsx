@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
-import ChartRenderSingleton from 'src/utils/chartRenderSingleton';
+import ChartRenderSingleton from '../../../utils/chartRenderSingleton';
 import Chart from '../../containers/Chart';
 
 const StyledContainer = styled.div<{ width: number; height: number }>`

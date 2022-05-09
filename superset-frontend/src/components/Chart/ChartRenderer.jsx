@@ -22,7 +22,7 @@ import React from 'react';
 import { SuperChart, logging, Behavior, t } from '@superset-ui/core';
 import { Logger, LOG_ACTIONS_RENDER_CHART } from 'src/logger/LogUtils';
 import { EmptyStateBig, EmptyStateSmall } from 'src/components/EmptyState';
-import ChartRenderSingleton from 'src/utils/chartRenderSingleton';
+import ChartRenderSingleton from '../../utils/chartRenderSingleton';
 
 const propTypes = {
   annotationData: PropTypes.object,
