@@ -240,11 +240,12 @@ class ChartRenderer extends React.Component {
           title={noResultTitle}
           description={noResultDescription}
           image={noResultImage}
+          onRenderSuccess={()=>ChartRenderSingleton.completeRender(chartId)}
         />
       );
     } else {
       noResultsComponent = (
-        <EmptyStateSmall title={noResultTitle} image={noResultImage} />
+        <EmptyStateSmall title={noResultTitle} image={noResultImage} onRenderSuccess={()=>ChartRenderSingleton.completeRender(chartId)} />
       );
     }
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useEffect } from 'react';
 import { css, styled } from '../../style';
 import { t } from '../../translation';
 
@@ -55,9 +55,16 @@ type Props = {
   height: number | string;
   id?: string;
   width: number | string;
+  onRenderSuccess?: Function;
 };
 
-const NoResultsComponent = ({ className, height, id, width }: Props) => {
+const NoResultsComponent = ({
+  className,
+  height,
+  id,
+  width,
+  onRenderSuccess,
+}: Props) => {
   // render the body if the width is auto/100% or greater than 250 pixels
   const shouldRenderBody =
     typeof width === 'string' || width > MIN_WIDTH_FOR_BODY;
@@ -65,6 +72,11 @@ const NoResultsComponent = ({ className, height, id, width }: Props) => {
   const BODY_STRING = t(
     'No results were returned for this query. If you expected results to be returned, ensure any filters are configured properly and the datasource contains data for the selected time range.',
   );
+  useEffect(() => {
+    if (onRenderSuccess) {
+      onRenderSuccess();
+    }
+  }, [onRenderSuccess]);
 
   return (
     <Container

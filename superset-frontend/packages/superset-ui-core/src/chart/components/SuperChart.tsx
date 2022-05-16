@@ -184,6 +184,7 @@ class SuperChart extends React.PureComponent<Props, {}> {
           className={className}
           height={height}
           width={width}
+          onRenderSuccess={onRenderSuccess}
         />
       );
     } else {

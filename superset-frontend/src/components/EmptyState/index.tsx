@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { ReactNode, SyntheticEvent } from 'react';
+import React, { ReactNode, SyntheticEvent, useEffect } from 'react';
 import { styled, css, SupersetTheme } from '@superset-ui/core';
 import { Empty } from 'src/components';
 import Button from 'src/components/Button';
@@ -32,9 +32,11 @@ export interface EmptyStateSmallProps {
   title: ReactNode;
   description?: ReactNode;
   image: ReactNode;
+  onRenderSuccess?: Function;
 }
 
 export interface EmptyStateProps extends EmptyStateSmallProps {
+  onRenderSuccess?: Function;
   buttonText?: ReactNode;
   buttonAction?: React.MouseEventHandler<HTMLElement>;
 }
@@ -146,83 +148,107 @@ const handleMouseDown = (e: SyntheticEvent) => {
 };
 
 export const EmptyStateBig = ({
+  onRenderSuccess,
   title,
   image,
   description,
   buttonAction,
   buttonText,
-}: EmptyStateProps) => (
-  <EmptyStateContainer>
-    <ImageContainer image={image} size={EmptyStateSize.Big} />
-    <TextContainer
-      css={(theme: SupersetTheme) =>
-        css`
-          max-width: ${theme.gridUnit * 150}px;
-        `
-      }
-    >
-      <BigTitle>{title}</BigTitle>
-      {description && <BigDescription>{description}</BigDescription>}
-      {buttonAction && buttonText && (
-        <ActionButton
-          buttonStyle="primary"
-          onClick={buttonAction}
-          onMouseDown={handleMouseDown}
-        >
-          {buttonText}
-        </ActionButton>
-      )}
-    </TextContainer>
-  </EmptyStateContainer>
-);
+}: EmptyStateProps) => {
+  useEffect(() => {
+    if (onRenderSuccess) {
+      onRenderSuccess();
+    }
+  }, [onRenderSuccess]);
+  return (
+    <EmptyStateContainer>
+      <ImageContainer image={image} size={EmptyStateSize.Big} />
+      <TextContainer
+        css={(theme: SupersetTheme) =>
+          css`
+            max-width: ${theme.gridUnit * 150}px;
+          `
+        }
+      >
+        <BigTitle>{title}</BigTitle>
+        {description && <BigDescription>{description}</BigDescription>}
+        {buttonAction && buttonText && (
+          <ActionButton
+            buttonStyle="primary"
+            onClick={buttonAction}
+            onMouseDown={handleMouseDown}
+          >
+            {buttonText}
+          </ActionButton>
+        )}
+      </TextContainer>
+    </EmptyStateContainer>
+  );
+};
 
 export const EmptyStateMedium = ({
+  onRenderSuccess,
   title,
   image,
   description,
   buttonAction,
   buttonText,
-}: EmptyStateProps) => (
-  <EmptyStateContainer>
-    <ImageContainer image={image} size={EmptyStateSize.Medium} />
-    <TextContainer
-      css={(theme: SupersetTheme) =>
-        css`
-          max-width: ${theme.gridUnit * 100}px;
-        `
-      }
-    >
-      <Title>{title}</Title>
-      {description && <Description>{description}</Description>}
-      {buttonText && buttonAction && (
-        <ActionButton
-          buttonStyle="primary"
-          onClick={buttonAction}
-          onMouseDown={handleMouseDown}
-        >
-          {buttonText}
-        </ActionButton>
-      )}
-    </TextContainer>
-  </EmptyStateContainer>
-);
+}: EmptyStateProps) => {
+  useEffect(() => {
+    if (onRenderSuccess) {
+      onRenderSuccess();
+    }
+  }, [onRenderSuccess]);
+  return (
+    <EmptyStateContainer>
+      <ImageContainer image={image} size={EmptyStateSize.Medium} />
+      <TextContainer
+        css={(theme: SupersetTheme) =>
+          css`
+            max-width: ${theme.gridUnit * 100}px;
+          `
+        }
+      >
+        <Title>{title}</Title>
+        {description && <Description>{description}</Description>}
+        {buttonText && buttonAction && (
+          <ActionButton
+            buttonStyle="primary"
+            onClick={buttonAction}
+            onMouseDown={handleMouseDown}
+          >
+            {buttonText}
+          </ActionButton>
+        )}
+      </TextContainer>
+    </EmptyStateContainer>
+  );
+};
 
 export const EmptyStateSmall = ({
   title,
   image,
   description,
-}: EmptyStateSmallProps) => (
-  <EmptyStateContainer>
-    <ImageContainer image={image} size={EmptyStateSize.Small} />
-    <TextContainer
-      css={(theme: SupersetTheme) =>
-        css`
-          max-width: ${theme.gridUnit * 75}px;
-        `
-      }
-    >
-      <Title>{title}</Title>
-      {description && <SmallDescription>{description}</SmallDescription>}
-    </TextContainer>
-  </EmptyStateContainer>
-);
+  onRenderSuccess,
+}: EmptyStateSmallProps) => {
+  useEffect(() => {
+    if (onRenderSuccess) {
+      onRenderSuccess();
+    }
+  }, [onRenderSuccess]);
+  return (
+    <EmptyStateContainer>
+      <ImageContainer image={image} size={EmptyStateSize.Small} />
+      <TextContainer
+        css={(theme: SupersetTheme) =>
+          css`
+            max-width: ${theme.gridUnit * 75}px;
+          `
+        }
+      >
+        <Title>{title}</Title>
+        {description && <SmallDescription>{description}</SmallDescription>}
+      </TextContainer>
+    </EmptyStateContainer>
+  );
+};
