@@ -56,6 +56,7 @@ const ASSET_BASE_URL = process.env.ASSET_BASE_URL || '';
 const output = {
   path: BUILD_DIR,
   publicPath: `${ASSET_BASE_URL}/static/assets/`,
+  clean: true,
 };
 if (isDevMode) {
   output.filename = '[name].[contenthash:8].entry.js';
@@ -65,7 +66,7 @@ if (isDevMode) {
   output.chunkFilename = '[name].[chunkhash].chunk.js';
 } else {
   output.filename = '[name].[chunkhash].entry.js';
-  output.chunkFilename = '[chunkhash].chunk.js';
+  output.chunkFilename = '[name].[chunkhash].chunk.js';
 }
 
 if (!isDevMode) {
@@ -153,18 +154,18 @@ if (!isDevMode) {
     }),
   );
 
-  plugins.push(
-    // runs type checking on a separate process to speed up the build
-    new ForkTsCheckerWebpackPlugin({
-      eslint: {
-        files: './{src,packages,plugins}/**/*.{ts,tsx,js,jsx}',
-        memoryLimit: 4096,
-        options: {
-          ignorePath: './.eslintignore',
-        },
-      },
-    }),
-  );
+  // plugins.push(
+  //   // runs type checking on a separate process to speed up the build
+  //   new ForkTsCheckerWebpackPlugin({
+  //     eslint: {
+  //       files: './{src,packages,plugins}/**/*.{ts,tsx,js,jsx}',
+  //       memoryLimit: 4096,
+  //       options: {
+  //         ignorePath: './.eslintignore',
+  //       },
+  //     },
+  //   }),
+  // );
 }
 
 const PREAMBLE = [path.join(APP_DIR, '/src/preamble.ts')];
@@ -204,16 +205,16 @@ const babelLoader = {
 
 const config = {
   entry: {
-    preamble: PREAMBLE,
+    // preamble: PREAMBLE,
     theme: path.join(APP_DIR, '/src/theme.ts'),
     menu: addPreamble('src/views/menu.tsx'),
     spa: addPreamble('/src/views/index.tsx'),
-    embedded: addPreamble('/src/embedded/index.tsx'),
-    addSlice: addPreamble('/src/addSlice/index.tsx'),
-    explore: addPreamble('/src/explore/index.jsx'),
-    sqllab: addPreamble('/src/SqlLab/index.tsx'),
-    profile: addPreamble('/src/profile/index.tsx'),
-    showSavedQuery: [path.join(APP_DIR, '/src/showSavedQuery/index.jsx')],
+    // embedded: addPreamble('/src/embedded/index.tsx'),
+    // addSlice: addPreamble('/src/addSlice/index.tsx'),
+    // explore: addPreamble('/src/explore/index.jsx'),
+    // sqllab: addPreamble('/src/SqlLab/index.tsx'),
+    // profile: addPreamble('/src/profile/index.tsx'),
+    // showSavedQuery: [path.join(APP_DIR, '/src/showSavedQuery/index.jsx')],
   },
   output,
   stats: 'minimal',
@@ -225,11 +226,14 @@ const config = {
   },
   optimization: {
     sideEffects: true,
+    // runtimeChunk:true,
+    // minimize: true,
     splitChunks: {
       chunks: 'all',
       // increase minSize for devMode to 1000kb because of sourcemap
       minSize: isDevMode ? 1000000 : 20000,
       name: nameChunks,
+      // maxSize: 40000,
       automaticNameDelimiter: '-',
       minChunks: 2,
       cacheGroups: {
@@ -499,9 +503,10 @@ if (isDevMode) {
 // Bundle analyzer is disabled by default
 // Pass flag --analyzeBundle=true to enable
 // e.g. npm run build -- --analyzeBundle=true
-if (analyzeBundle) {
-  config.plugins.push(new BundleAnalyzerPlugin({ analyzerPort }));
-}
+// if (analyzeBundle) {
+//   config.plugins.push(new BundleAnalyzerPlugin({ analyzerPort }));
+// }
+// config.plugins.push(new BundleAnalyzerPlugin({ analyzerPort }));
 
 // Speed measurement is disabled by default
 // Pass flag --measure=true to enable
