@@ -228,6 +228,8 @@ const FilterBar: React.FC<FiltersBarProps> = ({
   height,
   offset,
 }) => {
+  /*eslint-disable */
+  console.timeEnd('dashboard');
   const history = useHistory();
   const dataMaskApplied: DataMaskStateWithId = useNativeFiltersDataMask();
   const [editFilterSetId, setEditFilterSetId] = useState<number | null>(null);
@@ -324,10 +326,18 @@ const FilterBar: React.FC<FiltersBarProps> = ({
     setUpdateKey(1);
     filterIds.forEach(filterId => {
       if (dataMaskSelected[filterId]) {
+        const filterItem = filterValues.find(ele=>ele.id===filterId);
+        if(filterItem && filterItem.name) {
+          if(dataMaskSelected[filterId]?.filterState?.value !==null) {
+            window.localStorage.setItem(filterItem.name, JSON.stringify(dataMaskSelected[filterId].filterState))
+          } else {
+            window.localStorage.removeItem(filterItem.name);
+          }
+        }
         dispatch(updateDataMask(filterId, dataMaskSelected[filterId]));
       }
     });
-  }, [dataMaskSelected, dispatch]);
+  }, [dataMaskSelected, dispatch, filterValues]);
 
   const handleClearAll = useCallback(() => {
     const filterIds = Object.keys(dataMaskSelected);

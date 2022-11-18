@@ -56,7 +56,6 @@ import { FeatureFlag, isFeatureEnabled } from '../../featureFlags';
 import extractUrlParams from '../util/extractUrlParams';
 import getNativeFilterConfig from '../util/filterboxMigrationHelper';
 import { updateColorSchema } from './dashboardInfo';
-
 export const HYDRATE_DASHBOARD = 'HYDRATE_DASHBOARD';
 
 export const hydrateDashboard =
@@ -282,6 +281,51 @@ export const hydrateDashboard =
       directPathToChild.push(directLinkComponentId);
     }
 
+    if (metadata.native_filter_configuration) {
+      metadata.native_filter_configuration =
+        metadata.native_filter_configuration.map(filter => {
+          const item = { ...filter };
+          let urlValue = new URLSearchParams(window.location.search).get(
+            `var-${item.name}`,
+          );
+          if (urlValue || urlValue === 0) {
+            if (!Array.isArray(urlValue)) {
+              urlValue = [urlValue];
+            }
+            item.defaultDataMask.filterState.value = urlValue;
+            item.defaultDataMask.filterState.label = urlValue;
+            /* eslint-disable-next-line no-underscore-dangle */
+            item.defaultDataMask.__cache.value = urlValue;
+            /* eslint-disable-next-line no-underscore-dangle */
+            item.defaultDataMask.__cache.label = urlValue;
+            if (item.defaultDataMask?.extraFormData?.filters) {
+              item.defaultDataMask.extraFormData.filters.forEach(ele => {
+                /* eslint-disable-next-line no-param-reassign */
+                ele.val = urlValue;
+              });
+            }
+            window.localStorage.setItem(
+              item.name,
+              JSON.stringify(item.defaultDataMask.filterState),
+            );
+          } else {
+            const localState = window.localStorage.getItem(item.name);
+            const localItem = JSON.parse(localState);
+            if (localState && localItem.value!==null) {
+              item.defaultDataMask.filterState = localItem;
+              /* eslint-disable-next-line no-underscore-dangle */
+              item.defaultDataMask.__cache = localItem;
+              if (item.defaultDataMask?.extraFormData?.filters) {
+                item.defaultDataMask.extraFormData.filters.forEach(ele => {
+                  /* eslint-disable-next-line no-param-reassign */
+                  ele.val = localItem.value;
+                });
+              }
+            }
+          }
+          return item;
+        });
+    }
     // should convert filter_box to filter component?
     let filterConfig = metadata?.native_filter_configuration || [];
     if (filterboxMigrationState === FILTER_BOX_MIGRATION_STATES.REVIEWING) {
