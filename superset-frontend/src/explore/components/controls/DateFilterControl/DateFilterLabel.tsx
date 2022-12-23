@@ -42,13 +42,13 @@ import { testWithId } from 'src/utils/testUtils';
 import { noOp } from 'src/utils/common';
 import { FrameType } from './types';
 import ControlPopover from '../ControlPopover/ControlPopover';
-
 import {
   CommonFrame,
   CalendarFrame,
   CustomFrame,
   AdvancedFrame,
 } from './components';
+// import { replaceNow } from './utils/dateParser';
 
 // 修改的功能：filter类型为 No filter时，弹窗默认显示Custom的表单
 // 定义frame 类型变量，在二次开发的代码里会使用

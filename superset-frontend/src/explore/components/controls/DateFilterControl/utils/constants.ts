@@ -113,4 +113,6 @@ export const SEVEN_DAYS_AGO = moment()
   .startOf('day')
   .subtract(7, 'days')
   .format(MOMENT_FORMAT);
-export const MIDNIGHT = moment().utc().startOf('day').format(MOMENT_FORMAT);
+/* --修改过的内容 start--*/
+export const MIDNIGHT = moment().utcOffset(8).format(MOMENT_FORMAT);
+/* --修改过的内容 end--*/

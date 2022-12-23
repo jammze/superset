@@ -49,7 +49,9 @@ export const ISO8601_AND_CONSTANT = RegExp(
 const DATETIME_CONSTANT = ['now', 'today'];
 const defaultCustomRange: CustomRangeType = {
   sinceDatetime: SEVEN_DAYS_AGO,
-  sinceMode: 'relative',
+  /* --修改过的内容 start--*/
+  sinceMode: 'specific',
+  /* --修改过的内容 end--*/
   sinceGrain: 'day',
   sinceGrainValue: -7,
   untilDatetime: MIDNIGHT,
@@ -63,10 +65,14 @@ const SPECIFIC_MODE = ['specific', 'today', 'now'];
 
 export const dttmToMoment = (dttm: string): Moment => {
   if (dttm === 'now') {
-    return moment().utc().startOf('second');
+    /* --修改过的内容 start--*/
+    return moment().utcOffset(8).startOf('second');
+    /* --修改过的内容 end--*/
   }
   if (dttm === 'today') {
-    return moment().utc().startOf('day');
+    /* --修改过的内容 start--*/
+    return moment().utcOffset(8).startOf('day');
+    /* --修改过的内容 end--*/
   }
   return moment(dttm);
 };
@@ -232,4 +238,15 @@ export const customTimeRangeEncode = (customRange: CustomRangeType): string => {
   )}, ${sinceGrain})`;
   const until = `DATEADD(DATETIME("${anchorValue}"), ${untilGrainValue}, ${untilGrain})`;
   return `${since} : ${until}`;
+};
+
+export const replaceNow = (str: string): string => {
+  let result = str;
+  while (result.includes('now')) {
+    result = result.replace(
+      'now',
+      moment().utcOffset(6).startOf('second').format(MOMENT_FORMAT),
+    );
+  }
+  return result;
 };
